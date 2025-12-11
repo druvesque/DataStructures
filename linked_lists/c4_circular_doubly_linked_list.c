@@ -12,14 +12,14 @@ struct node *tail = NULL;
 
 void create_list() {
     int choice = 1;
-    struct node *newnode, *temp;
+    struct node *temp, *newnode;
 
     while (choice) {
         newnode = (struct node*)malloc(sizeof(struct node));
         printf("\nEnter Data: ");
         scanf("%d", &newnode->data);
-        newnode->prev = NULL;
         newnode->next = NULL;
+        newnode->prev = NULL;
 
         if (head == NULL || tail == NULL)
             tail = head = temp = newnode;
@@ -34,7 +34,7 @@ void create_list() {
     }
     temp->next = head;
     head->prev = temp;
-    tail = temp;
+    tail = temp; 
 }
 
 void insert_front() {
@@ -42,7 +42,6 @@ void insert_front() {
     newnode = (struct node*)malloc(sizeof(struct node));
     printf("\nEnter data you want to insert at front: ");
     scanf("%d", &newnode->data);
-    newnode->prev = NULL;
     newnode->next = NULL;
 
     if (head == NULL || tail == NULL) {
@@ -50,11 +49,14 @@ void insert_front() {
         tail = newnode;
         tail->next = newnode;
         head->prev = newnode;
-    } 
+    }
+
     else {
-        head->prev = newnode;
         newnode->next = head;
-        head =  newnode;
+        newnode->prev = tail;
+        tail->next = newnode;
+        head->prev = newnode;
+        head = newnode;
     }
 }
 
@@ -63,18 +65,20 @@ void insert_rear() {
     newnode = (struct node*)malloc(sizeof(struct node));
     printf("\nEnter data you want to insert at rear: ");
     scanf("%d", &newnode->data);
-    newnode->prev = NULL;
     newnode->next = NULL;
+    newnode->prev = NULL;
 
     if (tail == NULL || head == NULL) {
         head = newnode;
         tail = newnode;
         tail->next = newnode;
-        tail->prev = newnode;
+        head->prev = newnode;
     }
     else {
-        tail->next = newnode;
+        newnode->next = head;
         newnode->prev = tail;
+        tail->next = newnode;
+        head->prev = newnode;
         tail = newnode;
     }
 }
@@ -82,108 +86,104 @@ void insert_rear() {
 void insert_pos(int count) {
     int pos, i = 1;
     struct node *newnode, *temp;
-    newnode = (struct node*)malloc(sizeof(struct node));
-    printf("\nEnter the position: ");
+    printf("\nEnter position: ");
     scanf("%d", &pos);
 
-    if (pos > count + 1 || pos < 1)
+    if (pos < 1 || pos > count + 1)
         printf("\nInvalid Position");
-    else if(pos > count)
+    else if (pos > count)
         insert_rear();
     else if (pos == 1)
         insert_front();
     else {
+        newnode = (struct node*)malloc(sizeof(struct node));
+        printf("\nEnter data you want to insert at the specified position: ");
+        scanf("%d", &newnode->data);
         temp = head;
         while (i < pos - 1) {
             temp = temp->next;
             i++;
         }
-        printf("\nEnter Data you want to insert at the specified position: ");
-        scanf("%d", &newnode->data);
-        newnode->prev = temp;
         newnode->next = temp->next;
+        newnode->prev = temp;
         temp->next = newnode;
-        newnode->next->prev = newnode;
-    }
+    } 
 }
 
 void delete_front() {
-    struct node *temp;
-    if (head == NULL || tail == NULL)
+    struct node* temp;
+    if (head == NULL || tail == NULL) {
         printf("\nList is empty.");
-    else if (head->next == NULL) {
-        temp = head;
         head = tail = NULL;
-        free(temp);
+    }
+    else if (tail->next == tail) {
+        tail = head = NULL;
+        free(tail);
     }
     else {
+        printf("\nElement to be deleted: %d", head->data);
         temp = head;
-        head = head->next;
-        head->prev = NULL;
+        tail->next = temp->next;
+        temp->next->prev = tail;
         free(temp);
+        head = tail->next;
     }
 }
 
 void delete_rear() {
     struct node *temp;
-    if (tail == NULL)
-        printf("\nList is empty!");
-    else if (tail->prev == NULL) {
-        temp = tail;
+    if (head == NULL || tail == NULL) {
+        printf("\nList is empty.");
         head = tail = NULL;
-        free(temp);
+    }
+    else if (tail->next == tail) {
+        tail = head = NULL;
+        free(tail);
     }
     else {
+        printf("\nElement to be deleted: %d", tail->data);
         temp = tail;
-        tail = tail->prev;
-        tail->next = NULL;
+        tail = temp->prev;
+        tail->next = head;
+        head->prev = tail;
         free(temp);
     }
 }
 
-void delete_pos(int count) {
+void delete_pos() {
     int pos, i = 1;
-    struct node *temp;
-    printf("Enter the position: ");
+    struct node *newnode, *temp;
+    printf("\nEnter position: ");
     scanf("%d", &pos);
-    if (pos > count || pos < 1)
+
+    if (pos < 1 || pos > count + 1)
         printf("\nInvalid Position");
+    else if (pos > count)
+        delete_rear();
     else if (pos == 1)
         delete_front();
-    else if (pos == count)
-        delete_rear();
     else {
-        temp = head;
-        while (i < pos) {
-            temp = temp->next;
-            i++;
-        }
-        temp->prev->next = temp->next;
-        temp->next->prev = temp->prev;
-        printf("\nDeleted Element: %d", temp->data);
-        free(temp);
+        newnode = (struct node*)malloc(sizeof(struct node));
+        printf();
     }
-    
 }
 
 int length_ll() {
     int count = 0;
     struct node *temp;
-    if (head == NULL) {
+    if (head == NULL || tail == NULL)
         printf("\nList is empty!");
-        return 0;
-    }
     else {
         temp = head;
-        printf("\nThe Linked List is: ");
+        printf("\nThe Linked List is:\t");
     }
     do {
         printf("%d\t", temp->data);
-        temp = temp->next;
+        temp=temp->next;
         count++;
     } while (temp != head);
-
-    printf("\nLength: %d", count);
+    
+    printf("\n\nLength of the list: %d\n", count); 
     return count;
 }
 
@@ -191,12 +191,6 @@ int main() {
     create_list();
     insert_front();
     insert_rear();
-    int total_elements = length_ll();
-    // insert_pos(total_elements);
-    // delete_front();
-    // delete_rear();
-    // total_elements = length_ll();
-    // delete_pos(total_elements);
+    length_ll();
     return 0;
 }
-
