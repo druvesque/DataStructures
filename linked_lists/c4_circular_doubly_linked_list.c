@@ -150,9 +150,9 @@ void delete_rear() {
     }
 }
 
-void delete_pos() {
+void delete_pos(int count) {
     int pos, i = 1;
-    struct node *newnode, *temp;
+    struct node *temp, *current;
     printf("\nEnter position: ");
     scanf("%d", &pos);
 
@@ -163,8 +163,14 @@ void delete_pos() {
     else if (pos == 1)
         delete_front();
     else {
-        newnode = (struct node*)malloc(sizeof(struct node));
-        printf();
+        while (i < pos - 1) {
+            temp = temp->next;
+            i++;
+        }
+        current = temp->next;
+        temp->next = current->next;
+        current->next->prev = temp;
+        free(current); 
     }
 }
 
@@ -191,6 +197,12 @@ int main() {
     create_list();
     insert_front();
     insert_rear();
+    int length = length_ll();
+    insert_pos(length);
+    delete_front();
+    delete_rear();
+    length = length_ll();
+    delete_pos(length);
     length_ll();
     return 0;
 }
