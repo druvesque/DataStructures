@@ -50,6 +50,7 @@ void push() {
     if (s.top == SIZE - 1) {
         printf("\nSTACK OVERFLOW");
         printf("\nStack is already full!");
+        return;
     }
     else {
         printf("\nEnter the element to be pushed: ");
@@ -64,6 +65,7 @@ void pop() {
     if (s.top == -1) {
         printf("\nSTACK UNDERFLOW");
         printf("\nStack is already empty!");
+        return;
     }
     else {
         num = s.stack[s.top];
@@ -82,3 +84,49 @@ void display() {
         printf("%d\t", s.stack[i]);
 }
 
+void push_param(int item, int *top, int arr[]) {
+    if (*top == SIZE - 1) {
+        printf("STACK OVERFLOW\n");
+        return;
+    }
+    arr[++(*top)] = item;
+}
+
+void push_param_c(int item, int *top, char arr[]) {
+    if (*top == SIZE - 1) {
+        printf("STACK OVERFLOW\n");
+        return;
+    }
+    arr[++(*top)] = item;
+}
+
+int pop_param(int *top, int arr[]) {
+    int deleted_item;
+    if (*top == -1) {
+        printf("STACK UNDERFLOW\n");
+        return 0;
+    }
+    deleted_item = arr[(*top)--];
+    return deleted_item;
+}
+
+char pop_param_c(int *top, char arr[]) {
+    char deleted_item;
+    if (*top == -1) {
+        printf("STACK UNDERFLOW\n");
+        return 0;
+    }
+    deleted_item = arr[(*top)--];
+    return deleted_item;
+}
+
+void display_param(int top, int arr[]) {
+    int i;
+    if (top == -1) {
+        printf("Stack is empty\n");
+        return;
+    }
+    printf("\nThe Stack is:\t");
+    for (int i = top; i != -1; i--)
+        printf("%d\t", arr[i]);
+}
